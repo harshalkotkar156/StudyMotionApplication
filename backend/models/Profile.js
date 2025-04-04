@@ -11,6 +11,10 @@ const profileScheme = new mongoose.Schema({
     about:{
         type:String,
         trim:true 
+    },
+    contactNumber:{
+        type:String,
+        trim:true
     }
 });
 
