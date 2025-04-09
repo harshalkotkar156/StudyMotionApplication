@@ -108,10 +108,12 @@ exports.isAdmin = async(req,res,next) => {
     } catch (error) {
         return res.status(500).json({
             success:false,
-            message:"User cannot be verified"
+            message:"User cannot be verified" 
         })
     }
 }
+
+
 
 
 

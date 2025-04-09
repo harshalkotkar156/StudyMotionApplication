@@ -10,29 +10,29 @@ exports.resetPasswordToken = async(req,res) =>{
         const email= req.body;
 
 
-    const user = await User.findOne({email : email});
-    if(!user) {
-        return res.json({
-            success : false,
-            message : "Your Email is Not registered with us"
-        }); 
-    }
+        const user = await User.findOne({email : email});
+        if(!user) {
+            return res.json({
+                success : false,
+                message : "Your Email is Not registered with us"
+            }); 
+        }
 
-    const token = crypto.randomUUID();
+        const token = crypto.randomUUID();
 
-    const updatedDetails = await User.findOneAndUpdate({email :email},{token : token , resetPasswordExpires:Date.now() + 5 * 60 *1000},{new:true});
+        const updatedDetails = await User.findOneAndUpdate({email :email},{token : token , resetPasswordExpires:Date.now() + 5 * 60 *1000},{new:true});
 
 
 
-    //generate the link for resetting the pass
-    const url = `http://localhost:3000/update-password/${token}`
+        //generate the link for resetting the pass
+        const url = `http://localhost:3000/update-password/${token}`
 
-    await mailSender(email,`Password reset link","Password Reset link ${url}`);
+        await mailSender(email,`Password reset link","Password Reset link ${url}`);
 
-    return res.status(200).json({
-        success:true,
-        message:"Email sent SucessFully , please check mail adn change password"
-    });
+        return res.status(200).json({
+            success:true,
+            message:"Email sent SucessFully , please check mail and change password"
+        });
 
 
     } catch (error) {
@@ -84,16 +84,14 @@ exports.resetPassword = async(req,res) => {
         return res.status(200).json({
             success:true,
             message:"Password reset Successfully done"
-        })
+        });
 
     } catch (error) {
         console.log("error occcured ", error);
         return res.status(500).json({
             success:false,
             message:"Password Cannot be changed"
-        })
+        });
     }
-
-
 
 }
