@@ -2,6 +2,7 @@ const Course = require("../models/Course");
 const Category = require("../models/Category");
 const User = require("../models/User");
 const {uploadImageToCloudinary} = require("../utils/ImageUploader");
+const { populate } = require("../models/Profile");
 
 require('dotenv').config();
 
@@ -94,7 +95,7 @@ exports.createCourse = async(req,res) =>{
 
 
 
-exports.showAllCourses = async(req,res) => {
+exports.getAllCourses = async(req,res) => {
     try {
 
 
@@ -111,6 +112,50 @@ exports.showAllCourses = async(req,res) => {
         return res.status(500).json({
             success:false,
             message : "Cannot fetch all the courses"
+        });
+    }
+}
+
+
+exports.getCourseDetails = async(req,res) => {
+    try{
+
+        const {courseId} = req.body;
+        const CourseDetails=  await Course.find({_id:courseId}).populate({
+                                                                            path : "instructor",
+                                                                            populate:{
+                                                                                path:"additionalDetails"
+                                                                            },
+                                                                         }   
+                                                                        ).populate('category')
+                                                                        .populate('ratingAndReviews')
+                                                                        .populate({
+                                                                            path:"courseContent",
+                                                                            populate:{
+                                                                                path:'subSection'
+                                                                            }
+                                                                        }).exec();
+
+        if(!CourseDetails){
+            return res.status(400).json({
+                success:false,
+                message : `Could not find the Course with courseId : ${courseId}`,
+            });
+        }                      
+        
+        return res.status(200).json({
+            success:true,
+            message : "Course details fetched sucessfully",
+            data:CourseDetails
+        });
+
+        
+    }catch(err) {
+
+
+        return res.status(500).json({
+            success:false,
+            message : "Error in finding the course details"
         });
     }
 }
