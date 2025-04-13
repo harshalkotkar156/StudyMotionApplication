@@ -113,7 +113,7 @@ exports.getAverageRating = async(req,res) =>  {
 }
 
 
-exports.getAllratingAndReviews = async(req,res) => {
+exports.getAllRating = async(req,res) => {
 
     try {
         
@@ -130,7 +130,7 @@ exports.getAllratingAndReviews = async(req,res) => {
 
     } catch (error) {
         console.log("eror occur while fetching all reviews and rating");
-
+        
         return res.status(500).json({
             success:false,
             message : "Error occurs while fetching all reviews and rating"

@@ -6,6 +6,8 @@ exports.createSection = async(req,res) => {
     try {
 
         const {sectionName,courseId} = req.body;
+        console.log("======================================================================");
+        console.log("Course id: ",courseId);
 
         if(!sectionName || !courseId){
             return res.status(400).json({
@@ -14,9 +16,10 @@ exports.createSection = async(req,res) => {
             });
 
         }
-        const newSection = await Section.create({sectionName});
+        const newSection = await Section.create({sectionName:sectionName});
         //ithe populate karycha ahe so that both section and subsections objects will be visible
-        const updatedCourseDetails = await Course.findByIdAndUpdate ({courseId} , { $push : {courseContent : newSection._id}},{new:true});
+        const updatedCourseDetails = await Course.findByIdAndUpdate (courseId , { $push : {courseContent : newSection._id}},{new:true});
+        
 
 
         return res.status(200).json({

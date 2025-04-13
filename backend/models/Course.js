@@ -1,4 +1,4 @@
-const mongoose = required('mongoose');
+const mongoose = require('mongoose');
 
 const CourseSchema = new mongoose.Schema({
 
@@ -58,5 +58,5 @@ const CourseSchema = new mongoose.Schema({
 
 }); 
 
-module.exports  = mongoose.module("Course",CourseSchema);
+module.exports  = mongoose.model("Course",CourseSchema);
 

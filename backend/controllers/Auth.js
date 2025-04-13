@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Otp = require('../models/Otp');
+const OTP = require('../models/Otp');
 const otpGenerator = require("otp-generator");
 const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 //sendotp
-exports.sendOtp = async (req,res) => {
+exports.sendotp = async (req,res) => {
     try {
         
         const {email } = req.body;
@@ -21,13 +21,13 @@ exports.sendOtp = async (req,res) => {
             });
         }
 
-        var otp = otpGenerator.generate(6,{
+        let otp = otpGenerator.generate(6,{
             upperCaseAlphabets : false,
             lowerCaseAlphabets : false,
             specialChars : false
         });
         console.log("Otp genrated is : ",otp);
-        let result = await Otp.findOne({otp : otp});
+        let result = await OTP.findOne({otp : otp});
         while(result){
             otp = otpGenerator.generate(6,{
                 upperCaseAlphabets : false,
@@ -35,7 +35,7 @@ exports.sendOtp = async (req,res) => {
                 specialChars : false
             });
 
-            result =await Otp.findOne({otp: otp});
+            result =await OTP.findOne({otp: otp});
         }
 
 
@@ -43,7 +43,7 @@ exports.sendOtp = async (req,res) => {
         const otpPayload ={email,otp};
 
         //add in db
-        const otpBody = await Otp.create(otpPayload);
+        const otpBody = await OTP.create(otpPayload);
         console.log(otpBody);
 
         res.status(200).json( {
@@ -71,7 +71,7 @@ exports.sendOtp = async (req,res) => {
 
 //signup
 
-exports.signUp = async(req,res) => {
+exports.signup = async(req,res) => {
 
     // data fetch
     // then validate data 
@@ -79,9 +79,9 @@ exports.signUp = async(req,res) => {
     // check user already exist 
     try {
         
-        const {firstName,lastname,email,password,confirmPassword,accountType,contactNumber,otp} = req.body;
+        const {firstName,lastName,email,password,confirmPassword,accountType,contactNumber,otp} = req.body;
 
-        if(!firstName || !lastname || !email || !password || !confirmPassword || !contactNumber || !otp ){
+        if(!firstName || !lastName || !email || !password || !confirmPassword || !contactNumber || !otp ){
             return res.status(403).json({
                 success:false,
                 message:"All fileds are required"
@@ -105,16 +105,18 @@ exports.signUp = async(req,res) => {
         }
 
 
-        const recentOtp = await Otp.find({email}).sort({createdAt:-1}).limit(1);
+        const recentOtp = await OTP.find({email}).sort({createdAt:-1}).limit(1);
 
         console.log("RecentOtp is : ",recentOtp);
+        // console.log("OTP  is : ",recentOtp[0].otp , recentOtp[0].email);
 
         if(recentOtp.length == 0){
             return res.status(400).json({
                 success : false,
                 message : 'OTP NOT Found'
             })
-        }else if(otp !== recentOtp.otp){
+        }else if(otp !== recentOtp[0].otp){
+            console.log("this is OTP : ",recentOtp[0].otp);
             return res.status(400).json({
                 success:false,
                 message:"Invalid OTP"
@@ -130,17 +132,17 @@ exports.signUp = async(req,res) => {
             about:null,
             contactNumber:null
         })
-        const user = await Profile.create({
+        const user = await User.create({
             firstName,
-            lastname,
+            lastName,
             email,
             contactNumber,
             password:hashedPass,
             accountType,
             additionalDetails:profileDetails._id ,
-            image : `https://api.dicebear.com./5.x/initials/svg?seed=${firstName} ${lastname}`
+            image : `https://api.dicebear.com./5.x/initials/svg?seed=${firstName} ${lastName}`
         });
-         
+          
 
         return res.status(200).json({
             success:true,
@@ -183,6 +185,7 @@ exports.login = async(req,res) => {
         }
 
         const user = await User.findOne({email}).populate("additionalDetails");
+        
         if(!user){
             return res.status(403).json({
                 success:false,
@@ -190,6 +193,8 @@ exports.login = async(req,res) => {
             });
         }
 
+
+        console.log("USer is : ",user);
         if(await bcrypt.compare(password,user.password)){
             const payload = {
                 email:user.email,
@@ -203,9 +208,14 @@ exports.login = async(req,res) => {
             user.token= token;
             user.password=undefined;
             const options = {
-                expiresIn:new Date.now() + 3*24*60*60*1000,
-                httpOnly:true
-            }
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true
+            }            
+            
+            // const options = {
+            //     expiresIn:new Date.now() + 3*24*60*60*1000,
+            //     httpOnly:true
+            // }
             res.cookie("token",token,options).status(200).json({
                 success:true,
                 token,

@@ -1,19 +1,20 @@
 const SubSection = require("../models/SubSection");
 const Section = require("../models/Section");
-const {uploadImageToCloudinary} = require('../utils/ImageUploader');
+const  uploadImageToCloudinary = require('../utils/ImageUploader');
 require('dotenv').config();
 
 
 exports.createSubSection = async(req,res) => {
     try {
         
-        const {sectionID , title,description,timeDuration} = req.body;
+        const {sectionId , title,description,timeDuration} = req.body;
 
         const videoFile = req.files.videoFile;
+        // console.log(title,description,timeDuration,sectionId);
 
-        if(!sectionID || !title || !description|| !timeDuration || !videoFile) {
+        if(!sectionId || !title || !description|| !timeDuration || !videoFile) {
+            
             console.log("Incomplete details");
-
             return res.status(400).json({
                 success:false,
                 message : "All fields are required"
@@ -23,6 +24,7 @@ exports.createSubSection = async(req,res) => {
 
 
         const uploadDetails = await uploadImageToCloudinary(videoFile , process.env.FOLDER_NAME);
+        // console.log("Upload Details are as follow :",uploadDetails);
 
         const subsectionsDetails = await SubSection.create({
                                                             title:title,
@@ -32,7 +34,7 @@ exports.createSubSection = async(req,res) => {
                                                              });
 
 
-        const updateSection = await Section.findByIdAndUpdate({_id:sectionID}, { $push :{subSection:subsectionsDetails._id,}}, {new:true});
+        const updateSection = await Section.findByIdAndUpdate({_id:sectionId}, { $push :{subSection:subsectionsDetails._id,}}, {new:true});
         //log out the updated setion using the populate
 
         return res.status(200).json({
@@ -51,9 +53,7 @@ exports.createSubSection = async(req,res) => {
 }
 
 
-exports.updateSubSection = async(req,res) => {
-
-
+exports.updateSubSection = async(req,res) => {   
     try {
 
         const {newsubSectionName,subSectionId} = req.body;
@@ -64,7 +64,6 @@ exports.updateSubSection = async(req,res) => {
                 message : "Fill all the details"
             });
         }
-
         const updatedsubSectionName = await subSection.findByIdAndUpdate(subSectionId , {newsubSectionName : newsubSectionName},{new:true});
 
 
