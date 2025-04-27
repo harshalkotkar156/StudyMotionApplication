@@ -126,7 +126,7 @@ const Home = () => {
 
 
         {/* this is section 2 with with white backgroud */}
-        
+        {/* <div className='bg-amber-100'>Hello</div> */}
         <ExploreMore/>
 
         <div className='bg-[#F9F9F9] text-[#2C333F] '>
@@ -211,6 +211,7 @@ const Home = () => {
 
 
         {/* this is 4 th section of the blackish Backgroud  */}
+        
 
         <div className='text-white mt-10  bg-[#161D29] flex items-center justify-center'>
             <FooterSection/>

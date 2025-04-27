@@ -61,7 +61,7 @@ export const HomePageExplore = [
                 lessionNumber : 6
             },
             {
-                heading : "SCSS",
+                heading : "Java",
                 description : "This course teaches responsive web design techniques, allowing web pages to adapt to different devices and screen sizes",
                 level : 'Beginner',
                 lessionNumber : 6

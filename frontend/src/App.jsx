@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Home from './pages/home';
+import Login from "./components/Core/Auth/Login";
+import SignUp from './components/Core/Auth/SignUp';
 import { Route,Routes } from 'react-router-dom';
 import './App.css'
 
@@ -12,6 +14,9 @@ function App() {
 
       <Routes>
          <Route path='*' element={<Home/>}></Route>
+         <Route path='/login' element={<Login/>}></Route>
+         <Route path='/signup' element={<SignUp/>}></Route>
+         
       </Routes>
 
     </div>

@@ -14,19 +14,24 @@ const tabName = [
 
 const ExploreMore = () => {
 
-
     const [currrentTab,setCurrentTab] = useState(tabName[0]);
+    // console.log('this is start tab : ',currrentTab);
 
     const [courses,setCourses] = useState(HomePageExplore[0].courses);
     const [currentCard,setCurrentCard]  = useState(HomePageExplore[0].courses[0].heading);
-
+    // console.log('this is start courses : ',courses);
+    // console.log('this is start currentcard : ',currentCard);
 
     const setMyCourse = (value) => {
+
+        // console.log("=======================");
+        // console.log(value);
+        // console.log("=======================");
         setCurrentTab(value);
         const result = HomePageExplore.filter( (course) => course.tag === value);
-        console.log(result);
-        setCourses(result[0].course);
-        setCurrentCard(result[0].course[0].heading);
+        // console.log("========== this is new data fetched : " , result);
+        setCourses(result[0].courses);
+        setCurrentCard(result[0].courses[0].heading);
 
 
     }
@@ -48,9 +53,9 @@ const ExploreMore = () => {
                 tabName.map( (element,index) => {
                     return(
                         <div
+                        key={index}
                         className={`text-[16px] flex flex-row items-center gap-2 
                             ${currrentTab===element  ? "bg-[#000814] text-[#F1F2FF] font-medium" : "text-[#999DAA]"}  rounded-full transition-all duration-200 cursor-pointer hover:bg-[#000814] hover:text-[#F1F2FF] px-4 py-2`}
-                            key={index}
                             onClick={ () => setMyCourse(element) }
                         > 
                         {element}
@@ -62,11 +67,11 @@ const ExploreMore = () => {
         </div>
 
 
-        <div className='lg:h-[150px]'> </div>
+        <div className='lg:h-[50px] bg-amber-100 '> </div>
         
         {/* coursee card here / */}
 
-        <div className='absolute flex flex-row gap-10 justify-between w-full'>
+        <div className='relative flex flex-row  gap-4 justify-between w-[80%] top-20'>
             {
                 
                 courses.map( (element,index) => {
