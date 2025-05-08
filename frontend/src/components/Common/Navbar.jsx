@@ -16,36 +16,41 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.profile)
   const {totalItems} = useSelector((state) => state.cart)
 
-  // const [subLinks , setsublinks] = useState([]);
-  const subLinks = [
-    {
-      title : "Python",
-      link : "catalog/python"
-    },
-    {
-      title : "AI and ML",
-      link : "catalog/aiml"
-    }
-  ]
-
-  // async function getSublinks() {
-  //   try {
-      
-  //     const result = await apiConnector("GET" , categories.CATEGORIES_API);
-  //     console.log("Result fetched : ",result);
-  //     setsublinks(result.data.data);
-
-  //   } catch (error) {
-      
-  //     console.log(error);
-  //     console.log("Error while fetching Data");
-
+  const [subLinks , setsublinks] = useState([]);
+  // const subLinks = [
+  //   {
+  //     title : "Python",
+  //     link : "catalog/python"
+  //   },
+  //   {
+  //     title : "AI and ML",
+  //     link : "catalog/aiml"
   //   }
-  // }
+  // ]
+
+  async function getSublinks() {
+    try {
+      const result = await apiConnector("GET", categories.CATEGORIES_API);
+      const temp = result.data.allTags;
+      // console.log("Result fetched:", temp);
+    
+      // console.log("type of temp is:", typeof temp);
+      setsublinks(temp);
+      // console.log("The new array is:", subLinks);
+
+      // for(const obj in subLinks){
+      //   console.log("name is: ",obj.name);
+      // }
+
+    } catch (error) {
+      console.log(error);
+      console.log("Error while fetching Data");
+    }
+  }
 
   useEffect( () => {
-    // getSublinks();
-  },[]);
+    getSublinks();
+  },[subLinks]);
 
 
   const location = useLocation()
@@ -76,8 +81,8 @@ const Navbar = () => {
                       <p>{link.title}</p>
                       <IoIosArrowDropdownCircle className='mt-1' />
 
-                      <div className='invisible absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[80%] flex flex-col rounded-md bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px] '>
-                      <div className='absolute left-[50%] rounded h-6 w-6 rotate-45 bg-richblack-5 translate-y-[-40%] top-0 translate-x-[75%]  '> </div>
+                      <div className='invisible absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[30%] flex flex-col rounded-md bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px] z-50'>
+                      <div className='absolute left-[50%] rounded h-6 w-6 rotate-45 bg-richblack-5 translate-y-[-40%] top-0 translate-x-[75%] '></div>
 
 
                       {
@@ -85,8 +90,8 @@ const Navbar = () => {
                         (
                           subLinks.map( (subLinks ,index) => {
                             return (
-                              <Link to={`${subLinks.link}`} key={index} >
-                                  <p>{subLinks.title}</p>
+                              <Link to={`catalog/${subLinks.name}`} key={index} className='mt-1 p-2 rounded-md transition-all duration-200  hover:bg-richblack-25 hover:font-bold hover:text-richblack-800'>
+                                  <p className='capitalize'>{subLinks.name}</p>
                             </Link>
                             )
                           })

@@ -37,7 +37,7 @@ exports.showAllCategories = async(req,res) =>{
     try {
         
         const allTags = await Category.find({} , {name:true,description:true});
-        console.log("Hello");
+        // console.log("Hello");
         res.status(200).json({
             success:true,
             message:"All tags returned sucessFully",
