@@ -7,7 +7,8 @@ import { Link, useNavigate } from "react-router-dom"
 
 function LoginForm() {
   // const navigate = useNavigate()
-  // const dispatch = useDispatch()/
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +27,7 @@ function LoginForm() {
 
   const handleOnSubmit = (e) => {
     e.preventDefault()
-    // dispatch(login(email, password, navigate))
+    dispatch(login(email, password, navigate))
   }
 
   return (
